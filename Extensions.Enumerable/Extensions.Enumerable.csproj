@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Title>Extensions for IEnumerable and collections</Title>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <PackageId>Extensions.Enumerable</PackageId>
+    <Version>$(Version)</Version>
+    <PackageVersion>$(PackageVersion)</PackageVersion>
+    <Authors>Alexander Yermakov</Authors>
+    <PackageTags>net core; extension; ienumerable; collection</PackageTags>
+    <PackageLicenseUrl>https://github.com/A1essandro/NetCore.Extensions.Enumerable/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/A1essandro/NetCore.Extensions.Enumerable</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/A1essandro/NetCore.Extensions.Enumerable.git</RepositoryUrl>
+    <RootNamespace>Extensions.Enumerable</RootNamespace>
+    <PackageDescription>Extensions for IEnumerable and collections.</PackageDescription>
+  </PropertyGroup>
+
+</Project>
