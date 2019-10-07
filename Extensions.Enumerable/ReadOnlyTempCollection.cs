@@ -7,6 +7,9 @@ using System.Runtime.CompilerServices;
 namespace Extensions.Enumerable
 {
 
+    /// <summary>
+    /// Value type which implements <see cref="IReadOnlyCollection{T}"/>, <see cref="IDisposable"/> and access by index.
+    /// </summary>
     public readonly struct ReadOnlyTempCollection<T> : IReadOnlyCollection<T>, IDisposable
     {
 
@@ -14,15 +17,30 @@ namespace Extensions.Enumerable
 
         private readonly int _lenght;
 
+        /// <summary>
+        /// ctor
+        /// </summary>
+        /// <param name="source">Source enumerable</param>
+        /// <param name="maxSize">Max size for collection</param>
+        /// <exception cref="IndexOutOfRangeException">If maxSize is less then source</exception> 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal ReadOnlyTempCollection(IEnumerable<T> source, int maxSize)
         {
             _collection = ArrayPool<T>.Shared.Rent(maxSize);
-
             _lenght = 0;
-            foreach (T item in source)
+
+            using (IEnumerator<T> enumerator = source.GetEnumerator())
             {
-                _collection[_lenght++] = item;
+                bool step = false;
+                while (_lenght <= maxSize && (step = enumerator.MoveNext()))
+                {
+                    _collection[_lenght++] = enumerator.Current;
+                }
+
+                if (step)
+                {
+                    throw new IndexOutOfRangeException();
+                }
             }
         }
 

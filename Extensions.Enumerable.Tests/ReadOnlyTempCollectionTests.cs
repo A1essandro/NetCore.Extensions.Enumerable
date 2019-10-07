@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
@@ -50,6 +51,22 @@ namespace Extensions.Enumerable.Tests
             {
                 Assert.Equal(arr, temp);
             }
+        }
+
+        [Theory(DisplayName = "ReadOnlyTempCollection. Index out of range in ctor.")]
+        [InlineData(1, 1)]
+        [InlineData(5, 2)]
+        [InlineData(100, 50)]
+        [InlineData(1024, 24)]
+        public void IndexOutOfRangeExceptionConstructorTest(int size, int offset)
+        {
+            Assert.Throws<IndexOutOfRangeException>(() => _getEnumerable(size).ToTemp(size - offset));
+        }
+
+        [Fact(DisplayName = "ReadOnlyTempCollection. Argiment out of range in ctor.")]
+        public void OutOfRangeExceptionConstructorTest()
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() => _getEnumerable(1000).ToTemp(-1));
         }
 
         private IEnumerable<int> _getEnumerable(int size)
