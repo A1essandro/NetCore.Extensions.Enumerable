@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <Title>Extensions for IEnumerable and collections</Title>
     <TargetFramework>netcoreapp2.0</TargetFramework>
@@ -15,5 +14,8 @@
     <RootNamespace>Extensions.Enumerable</RootNamespace>
     <PackageDescription>Extensions for IEnumerable and collections.</PackageDescription>
   </PropertyGroup>
-
+  <ItemGroup>
+    <PackageReference Include="DotNetCross.Memory.Unsafe" Version="0.3.0"/>
+    <PackageReference Include="System.Runtime" Version="4.3.1"/>
+  </ItemGroup>
 </Project>

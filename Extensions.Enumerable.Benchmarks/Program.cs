@@ -6,7 +6,7 @@ namespace Extensions.Enumerable.Benchmarks
     {
         public static void Main(string[] args)
         {
-            BenchmarkRunner.Run<BenchmarksSet>();
+            BenchmarkRunner.Run<AvoidingLohCollectionBenchmarkSet>();
         }
     }
 }

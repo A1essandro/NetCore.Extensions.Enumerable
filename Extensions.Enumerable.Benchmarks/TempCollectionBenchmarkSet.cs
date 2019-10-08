@@ -6,7 +6,7 @@ namespace Extensions.Enumerable.Benchmarks
 {
 
     [RankColumn, MemoryDiagnoser]
-    public class BenchmarksSet
+    public class TempCollectionBenchmarkSet
     {
 
         [Params(8, 1024, 32768)]

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Extensions.Enumerable.Internal;
 
 namespace Extensions.Enumerable
 {
@@ -15,6 +16,11 @@ namespace Extensions.Enumerable
         public static ReadOnlyTempCollection<T> ToTemp<T>(this IEnumerable<T> source, int maxSize = 512)
         {
             return new ReadOnlyTempCollection<T>(source, maxSize);
+        }
+
+        public static IAvoidingLargeObjectHeapCollection<T> ToAvoidingLohCollection<T>(this IEnumerable<T> source)
+        {
+            return new AvoidingLargeObjectHeapCollection<T>(source);
         }
 
     }
