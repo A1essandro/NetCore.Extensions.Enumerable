@@ -50,10 +50,13 @@ namespace Extensions.Enumerable.Internal.Collections
             }
         }
 
+        /// <inheritdoc cref="IAvoidingLargeObjectHeapCollection{T}.Count"/>
         public int Count => _partCursor * _maxEntriesPartSize + _entryCursor + 1;
 
+        /// <inheritdoc cref="IAvoidingLargeObjectHeapCollection{T}.IsReadOnly"/>
         public bool IsReadOnly => false;
 
+        /// <inheritdoc cref="IAvoidingLargeObjectHeapCollection{T}.Add"/>
         public void Add(T item)
         {
             if (_partCursor < 0)
@@ -77,8 +80,10 @@ namespace Extensions.Enumerable.Internal.Collections
             _entriesParts[_partCursor][_entryCursor] = item;
         }
 
+        /// <inheritdoc cref="IAvoidingLargeObjectHeapCollection{T}.Clear"/>
         public void Clear() => _entriesParts.Clear();
 
+        /// <inheritdoc cref="IAvoidingLargeObjectHeapCollection{T}.Contains"/>
         public bool Contains(T item)
         {
             foreach (T entry in this)
@@ -90,11 +95,20 @@ namespace Extensions.Enumerable.Internal.Collections
             return false;
         }
 
+        /// <inheritdoc cref="IAvoidingLargeObjectHeapCollection{T}.CopyTo"/>
         public void CopyTo(T[] array, int arrayIndex)
         {
-            throw new System.NotImplementedException();
+            if (array.Length - arrayIndex <= 0)
+                throw new ArgumentException("Destination array was not long enough. Check the destination index, length, and the array's lower bounds.");
+
+            var sourceI = 0;
+            for (int destI = arrayIndex; sourceI < Count; destI++)
+            {
+                array[destI] = this[sourceI++];
+            }
         }
 
+        /// <inheritdoc cref="IAvoidingLargeObjectHeapCollection{T}.GetEnumerator"/>
         public IEnumerator<T> GetEnumerator()
         {
             for (int part = 0; part < _partCursor; part++)

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Extensions.Enumerable.Internal.Collections;
 using Xunit;
 
@@ -63,6 +64,17 @@ namespace Extensions.Enumerable.Tests
             var collection = new AvoidingLargeObjectHeapCollection<int>(_getEnumerable(50000));
 
             Assert.Throws<IndexOutOfRangeException>(() => collection[index] = 5);
+        }
+
+        [Fact(DisplayName = "AvoidingLargeObjectHeapCollection. CopyTo.")]
+        public void CopyToTest()
+        {
+            var collection = new AvoidingLargeObjectHeapCollection<int>(_getEnumerable(3));
+            var dest = new int[10];
+
+            collection.CopyTo(dest, 5);
+
+            Assert.Equal(new int[] { 0, 0, 0, 0, 0, 0, 1, 2, 0, 0 }, dest);
         }
 
     }
