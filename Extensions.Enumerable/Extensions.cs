@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Extensions.Enumerable.Internal;
+using Extensions.Enumerable.Internal.Collections;
 
 namespace Extensions.Enumerable
 {

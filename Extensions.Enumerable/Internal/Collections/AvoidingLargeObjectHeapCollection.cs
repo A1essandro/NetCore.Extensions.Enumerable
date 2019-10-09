@@ -3,10 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using DotNetCross.Memory;
+using Extensions.Enumerable.Internal.Helpers;
 
 [assembly: InternalsVisibleToAttribute("Extensions.Enumerable.Tests")]
 
-namespace Extensions.Enumerable.Internal
+namespace Extensions.Enumerable.Internal.Collections
 {
 
     internal class AvoidingLargeObjectHeapCollection<T> : IAvoidingLargeObjectHeapCollection<T>
@@ -35,13 +36,18 @@ namespace Extensions.Enumerable.Internal
         {
             get
             {
-                var partIndex = index / _maxEntriesPartSize;
-                var entryIndex = index % _maxEntriesPartSize;
-                if (partIndex == _partCursor && entryIndex > _entryCursor)
+                var decomposed = IndexHelper.Decompose(index, _maxEntriesPartSize);
+                if (decomposed.Item1 == _partCursor && decomposed.Item2 > _entryCursor)
                     throw new IndexOutOfRangeException();
-                return _entriesParts[index / _maxEntriesPartSize][entryIndex];
+                return _entriesParts[decomposed.Item1][decomposed.Item2];
             }
-            set => throw new NotImplementedException();
+            set
+            {
+                var decomposed = IndexHelper.Decompose(index, _maxEntriesPartSize);
+                if (decomposed.Item1 == _partCursor && decomposed.Item2 > _entryCursor)
+                    throw new IndexOutOfRangeException();
+                _entriesParts[decomposed.Item1][decomposed.Item2] = value;
+            }
         }
 
         public int Count => _partCursor * _maxEntriesPartSize + _entryCursor + 1;
