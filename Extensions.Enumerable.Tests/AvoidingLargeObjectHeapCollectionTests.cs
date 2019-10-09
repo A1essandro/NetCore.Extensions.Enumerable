@@ -17,8 +17,8 @@ namespace Extensions.Enumerable.Tests
         [Theory(DisplayName = "AvoidingLargeObjectHeapCollection. Value by index.")]
         [InlineData(0)]
         [InlineData(5)]
-        [InlineData(100)]
         [InlineData(1024)]
+        [InlineData(25024)]
         [InlineData(49999)]
         public void ValueByIndexTest(int index)
         {

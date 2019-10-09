@@ -37,14 +37,14 @@ namespace Extensions.Enumerable.Internal
             {
                 var partIndex = index / _maxEntriesPartSize;
                 var entryIndex = index % _maxEntriesPartSize;
-                if (partIndex == _partCursor && entryIndex >= _entryCursor)
+                if (partIndex == _partCursor && entryIndex > _entryCursor)
                     throw new IndexOutOfRangeException();
                 return _entriesParts[index / _maxEntriesPartSize][entryIndex];
             }
             set => throw new NotImplementedException();
         }
 
-        public int Count => _partCursor * _maxEntriesPartSize + _entryCursor;
+        public int Count => _partCursor * _maxEntriesPartSize + _entryCursor + 1;
 
         public bool IsReadOnly => false;
 
@@ -71,10 +71,7 @@ namespace Extensions.Enumerable.Internal
             _entriesParts[_partCursor][_entryCursor] = item;
         }
 
-        public void Clear()
-        {
-            _entriesParts.Clear();
-        }
+        public void Clear() => _entriesParts.Clear();
 
         public bool Contains(T item)
         {
