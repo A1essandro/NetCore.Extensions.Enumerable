@@ -1,7 +1,6 @@
+using Extensions.Enumerable.Internal.Collections;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Extensions.Enumerable.Internal.Collections;
 using Xunit;
 
 namespace Extensions.Enumerable.Tests
@@ -13,6 +12,19 @@ namespace Extensions.Enumerable.Tests
         {
             for (int i = 0; i < size; i++)
                 yield return i;
+        }
+
+        [Theory(DisplayName = "AvoidingLargeObjectHeapCollection. Count.")]
+        [InlineData(0)]
+        [InlineData(5)]
+        [InlineData(1024)]
+        [InlineData(25024)]
+        [InlineData(49999)]
+        public void  CountTest(int count)
+        {
+            var collection = new AvoidingLargeObjectHeapCollection<int>(_getEnumerable(count));
+
+            Assert.Equal(count, collection.Count);
         }
 
         [Theory(DisplayName = "AvoidingLargeObjectHeapCollection. Getting value by index.")]
@@ -48,6 +60,8 @@ namespace Extensions.Enumerable.Tests
         [Theory(DisplayName = "AvoidingLargeObjectHeapCollection. Getting value by index out of range.")]
         [InlineData(-1)]
         [InlineData(50000)]
+        [InlineData(55000)]
+        [InlineData(-5000)]
         public void GettingIndexOutOfRangeExceptionTest(int index)
         {
             var collection = new AvoidingLargeObjectHeapCollection<int>(_getEnumerable(50000));

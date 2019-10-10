@@ -15,10 +15,10 @@ namespace Extensions.Enumerable.Internal.Collections
 
         private static int _LargeObjectHeapThreshold = 85000;
 
-        private int _maxEntriesPartSize;
+        private readonly int _maxEntriesPartSize;
         private IList<T[]> _entriesParts;
-        private int _entryCursor = -1;
-        private int _partCursor = -1;
+        private int _entryCursor = 0;
+        private int _partCursor = 0;
 
         public AvoidingLargeObjectHeapCollection(IEnumerable<T> source)
         {
@@ -37,36 +37,45 @@ namespace Extensions.Enumerable.Internal.Collections
             get
             {
                 var decomposed = IndexHelper.Decompose(index, _maxEntriesPartSize);
-                if (decomposed.Item1 == _partCursor && decomposed.Item2 > _entryCursor)
+                if (decomposed.Item1 >= _partCursor - 1 && decomposed.Item2 >= _entryCursor)
                     throw new IndexOutOfRangeException();
                 return _entriesParts[decomposed.Item1][decomposed.Item2];
             }
             set
             {
                 var decomposed = IndexHelper.Decompose(index, _maxEntriesPartSize);
-                if (decomposed.Item1 == _partCursor && decomposed.Item2 > _entryCursor)
+                if (decomposed.Item1 >= _partCursor - 1 && decomposed.Item2 >= _entryCursor)
                     throw new IndexOutOfRangeException();
                 _entriesParts[decomposed.Item1][decomposed.Item2] = value;
             }
         }
 
-        /// <inheritdoc cref="IAvoidingLargeObjectHeapCollection{T}.Count"/>
-        public int Count => _partCursor * _maxEntriesPartSize + _entryCursor + 1;
+        /// <inheritdoc cref="ICollection{T}.Count"/>
+        public int Count
+        {
+            get
+            {
+                return _partCursor == 0
+                    ? 0
+                    : (_partCursor - 1) * _maxEntriesPartSize + _entryCursor;
+            }
+        }
 
-        /// <inheritdoc cref="IAvoidingLargeObjectHeapCollection{T}.IsReadOnly"/>
+        /// <inheritdoc cref="ICollection{T}.IsReadOnly"/>
         public bool IsReadOnly => false;
 
-        /// <inheritdoc cref="IAvoidingLargeObjectHeapCollection{T}.Add"/>
+        /// <inheritdoc cref="ICollection{T}.Add"/>
         public void Add(T item)
         {
-            if (_partCursor < 0)
+            if (_partCursor == 0)
             {
-                _entriesParts = new List<T[]>(1);
-                _entriesParts.Add(new T[_maxEntriesPartSize]);
-                _partCursor = 0;
+                _entriesParts = new List<T[]>(1)
+                {
+                    new T[_maxEntriesPartSize]
+                };
+                _partCursor = 1;
             }
 
-            _entryCursor++;
             if (_entryCursor >= _maxEntriesPartSize)
             {
                 if (_entryCursor > _maxEntriesPartSize)
@@ -77,13 +86,14 @@ namespace Extensions.Enumerable.Internal.Collections
                 _entryCursor = 0;
             }
 
-            _entriesParts[_partCursor][_entryCursor] = item;
+            _entriesParts[_partCursor - 1][_entryCursor] = item;
+            _entryCursor++;
         }
 
-        /// <inheritdoc cref="IAvoidingLargeObjectHeapCollection{T}.Clear"/>
+        /// <inheritdoc cref="ICollection{T}.Clear"/>
         public void Clear() => _entriesParts.Clear();
 
-        /// <inheritdoc cref="IAvoidingLargeObjectHeapCollection{T}.Contains"/>
+        /// <inheritdoc cref="ICollection{T}.Contains"/>
         public bool Contains(T item)
         {
             foreach (T entry in this)
@@ -95,7 +105,7 @@ namespace Extensions.Enumerable.Internal.Collections
             return false;
         }
 
-        /// <inheritdoc cref="IAvoidingLargeObjectHeapCollection{T}.CopyTo"/>
+        /// <inheritdoc cref="ICollection{T}.CopyTo"/>
         public void CopyTo(T[] array, int arrayIndex)
         {
             if (array.Length - arrayIndex <= 0)
@@ -108,7 +118,7 @@ namespace Extensions.Enumerable.Internal.Collections
             }
         }
 
-        /// <inheritdoc cref="IAvoidingLargeObjectHeapCollection{T}.GetEnumerator"/>
+        /// <inheritdoc cref="ICollection{T}.GetEnumerator"/>
         public IEnumerator<T> GetEnumerator()
         {
             for (int part = 0; part < _partCursor; part++)
@@ -122,7 +132,7 @@ namespace Extensions.Enumerable.Internal.Collections
 
         public bool Remove(T item)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

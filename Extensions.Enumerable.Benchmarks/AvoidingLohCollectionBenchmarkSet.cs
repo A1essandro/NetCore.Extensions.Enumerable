@@ -9,7 +9,7 @@ namespace Extensions.Enumerable.Benchmarks
     public class AvoidingLohCollectionBenchmarkSet
     {
 
-        [Params(1024)]
+        [Params(8, 1024, 30_000, 1_000_000)]
         public int N = 0;
 
         [Benchmark]

@@ -13,9 +13,10 @@
     <RepositoryUrl>https://github.com/A1essandro/NetCore.Extensions.Enumerable.git</RepositoryUrl>
     <RootNamespace>Extensions.Enumerable</RootNamespace>
     <PackageDescription>Extensions for IEnumerable and collections.</PackageDescription>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="DotNetCross.Memory.Unsafe" Version="0.3.0"/>
-    <PackageReference Include="System.Runtime" Version="4.3.1"/>
+    <PackageReference Include="DotNetCross.Memory.Unsafe" Version="0.3.0" />
+    <PackageReference Include="System.Runtime" Version="4.3.1" />
   </ItemGroup>
 </Project>
