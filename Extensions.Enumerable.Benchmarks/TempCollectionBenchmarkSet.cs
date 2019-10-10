@@ -9,7 +9,7 @@ namespace Extensions.Enumerable.Benchmarks
     public class TempCollectionBenchmarkSet
     {
 
-        [Params(8, 1024, 32768)]
+        [Params(8, 1024, 32_768, 1_048_576)]
         public int N = 0;
 
         [Benchmark]
