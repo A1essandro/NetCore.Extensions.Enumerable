@@ -23,5 +23,10 @@ namespace Extensions.Enumerable
             return new AvoidingLargeObjectHeapCollection<T>(source);
         }
 
+        public static IAvoidingLargeObjectHeapReadOnlyCollection<T> ToAvoidingLohReadOnlyCollection<T>(this IEnumerable<T> source)
+        {
+            return new AvoidingLargeObjectHeapReadOnlyCollection<T>(source);
+        }
+
     }
 }
