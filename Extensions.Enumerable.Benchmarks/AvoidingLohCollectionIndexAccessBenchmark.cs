@@ -1,13 +1,13 @@
-using BenchmarkDotNet.Attributes;
 using System.Collections.Generic;
 using System.Linq;
+using BenchmarkDotNet.Attributes;
 
 namespace Extensions.Enumerable.Benchmarks
 {
 
     [RankColumn, MemoryDiagnoser]
     [BenchmarkSet]
-    public class AvoidingLohCollectionBenchmarkSet
+    public class AvoidingLohCollectionIndexAccessBenchmark
     {
 
         [Params(8, 1024, 30_000, 1_000_000)]
@@ -18,10 +18,10 @@ namespace Extensions.Enumerable.Benchmarks
         {
             int[] array = _getEnumerable().ToArray();
 
-            var nine = array.Where(x => x % 9 == 0).Select(x => (long)x).Sum();
-            var maxOdd = array.Where(x => x % 2 == 1).Select(x => (long)x).Max();
+            var half = array[N / 2];
+            var third = array[N / 3];
 
-            return nine / maxOdd;
+            return half / third;
         }
 
         [Benchmark]
@@ -29,30 +29,32 @@ namespace Extensions.Enumerable.Benchmarks
         {
             List<int> list = _getEnumerable().ToList();
 
-            var nine = list.Where(x => x % 9 == 0).Select(x => (long)x).Sum();
-            var maxOdd = list.Where(x => x % 2 == 1).Select(x => (long)x).Max();
+            var half = list[N / 2];
+            var third = list[N / 3];
 
-            return nine / maxOdd;
+            return half / third;
         }
 
         [Benchmark]
         public double AvoidingLoh()
         {
             IAvoidingLargeObjectHeapCollection<int> collection = _getEnumerable().ToAvoidingLohCollection();
-            var nine = collection.Where(x => x % 9 == 0).Select(x => (long)x).Sum();
-            var maxOdd = collection.Where(x => x % 2 == 1).Select(x => (long)x).Max();
 
-            return nine / maxOdd;
+            var half = collection[N / 2];
+            var third = collection[N / 3];
+
+            return half / third;
         }
 
         [Benchmark]
         public double AvoidingLohReadOnly()
         {
             IAvoidingLargeObjectHeapReadOnlyCollection<int> collection = _getEnumerable().ToAvoidingLohReadOnlyCollection();
-            var nine = collection.Where(x => x % 9 == 0).Select(x => (long)x).Sum();
-            var maxOdd = collection.Where(x => x % 2 == 1).Select(x => (long)x).Max();
 
-            return nine / maxOdd;
+            var half = collection[N / 2];
+            var third = collection[N / 3];
+
+            return half / third;
         }
 
         private IEnumerable<int> _getEnumerable()

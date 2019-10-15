@@ -6,6 +6,7 @@ namespace Extensions.Enumerable.Benchmarks
 {
 
     [RankColumn, MemoryDiagnoser]
+    [BenchmarkSet]
     public class TempCollectionBenchmarkSet
     {
 
