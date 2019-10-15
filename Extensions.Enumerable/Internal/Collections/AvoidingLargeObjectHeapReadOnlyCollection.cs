@@ -16,14 +16,14 @@ namespace Extensions.Enumerable.Internal.Collections
         private static int _LargeObjectHeapThreshold = 85000;
 
         private readonly int _maxEntriesPartSize;
-        private List<List<T>> _entriesParts;
+        private List<T[]> _entriesParts;
         private int _entryCursor = 0;
         private int? _count = null;
 
         public AvoidingLargeObjectHeapReadOnlyCollection(IEnumerable<T> source)
         {
             int tSize = Unsafe.SizeOf<T>();
-            _entriesParts = new List<List<T>>(0);
+            _entriesParts = new List<T[]>(0);
 
             _maxEntriesPartSize = (_LargeObjectHeapThreshold / tSize / 4) * 3;
 
@@ -79,9 +79,9 @@ namespace Extensions.Enumerable.Internal.Collections
         {
             if (_entriesParts.Count == 0)
             {
-                _entriesParts = new List<List<T>>(1)
+                _entriesParts = new List<T[]>(1)
                 {
-                    _getNewPart()
+                    new T[_maxEntriesPartSize]
                 };
             }
 
@@ -90,15 +90,13 @@ namespace Extensions.Enumerable.Internal.Collections
                 if (_entryCursor > _maxEntriesPartSize)
                     throw new IndexOutOfRangeException();
 
-                _entriesParts.Add(_getNewPart());
+                _entriesParts.Add(new T[_maxEntriesPartSize]);
                 _entryCursor = 0;
             }
 
-            _entriesParts[_entriesParts.Count - 1].Add(item);
+            _entriesParts[_entriesParts.Count - 1][_entryCursor] = item;
             _entryCursor++;
         }
-
-        private List<T> _getNewPart() => new List<T>((_maxEntriesPartSize + 1) / 2);
 
     }
 }
