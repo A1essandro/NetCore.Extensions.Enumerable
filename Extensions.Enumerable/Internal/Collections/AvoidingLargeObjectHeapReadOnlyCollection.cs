@@ -23,6 +23,7 @@ namespace Extensions.Enumerable.Internal.Collections
         public AvoidingLargeObjectHeapReadOnlyCollection(IEnumerable<T> source)
         {
             int tSize = Unsafe.SizeOf<T>();
+            _entriesParts = new List<List<T>>(0);
 
             _maxEntriesPartSize = (_LargeObjectHeapThreshold / tSize / 4) * 3;
 
@@ -36,17 +37,10 @@ namespace Extensions.Enumerable.Internal.Collections
         {
             get
             {
-                if (index < 0 || index > Count)
+                if (index < 0 || index >= Count)
                     throw new IndexOutOfRangeException();
                 var decomposed = IndexHelper.Decompose(index, _maxEntriesPartSize);
                 return _entriesParts[decomposed.Item1][decomposed.Item2];
-            }
-            set
-            {
-                if (index < 0 || index > Count)
-                    throw new IndexOutOfRangeException();
-                var decomposed = IndexHelper.Decompose(index, _maxEntriesPartSize);
-                _entriesParts[decomposed.Item1][decomposed.Item2] = value;
             }
         }
 
@@ -100,7 +94,7 @@ namespace Extensions.Enumerable.Internal.Collections
                 _entryCursor = 0;
             }
 
-            _entriesParts[_entriesParts.Count - 1][_entryCursor] = item;
+            _entriesParts[_entriesParts.Count - 1].Add(item);
             _entryCursor++;
         }
 
