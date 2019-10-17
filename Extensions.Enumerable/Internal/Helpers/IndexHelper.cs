@@ -14,5 +14,11 @@ namespace Extensions.Enumerable.Internal.Helpers
             return (partIndex, entryIndex);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static int Compose((int, int) decomposed, int maxInBucket)
+        {
+            return decomposed.Item1 * maxInBucket + decomposed.Item2;
+        }
+
     }
 }

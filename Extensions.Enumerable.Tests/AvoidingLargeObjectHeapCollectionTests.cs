@@ -20,7 +20,7 @@ namespace Extensions.Enumerable.Tests
         [InlineData(1024)]
         [InlineData(25024)]
         [InlineData(49999)]
-        public void  CountTest(int count)
+        public void CountTest(int count)
         {
             var collection = new AvoidingLargeObjectHeapCollection<int>(_getEnumerable(count));
 
@@ -77,7 +77,7 @@ namespace Extensions.Enumerable.Tests
         {
             var collection = new AvoidingLargeObjectHeapCollection<int>(_getEnumerable(50000));
 
-            Assert.Throws<IndexOutOfRangeException>(() => collection[index] = 5);
+            Assert.Throws<IndexOutOfRangeException>(() => collection[index] = index);
         }
 
         [Fact(DisplayName = "AvoidingLargeObjectHeapCollection. CopyTo.")]
@@ -89,6 +89,35 @@ namespace Extensions.Enumerable.Tests
             collection.CopyTo(dest, 5);
 
             Assert.Equal(new int[] { 0, 0, 0, 0, 0, 0, 1, 2, 0, 0 }, dest);
+        }
+
+        [Theory(DisplayName = "AvoidingLargeObjectHeapCollection. Remove.")]
+        [InlineData(0)]
+        [InlineData(25000)]
+        [InlineData(49999)]
+        public void RemoveTest(int index)
+        {
+            var collection = new AvoidingLargeObjectHeapCollection<int>(_getEnumerable(50000));
+
+            Assert.True(collection.Remove(index));
+            Assert.Equal(49999, collection.Count);
+            if (index > 0)
+                Assert.Equal(index - 1, collection[index - 1]);
+            if (index < 49999)
+                Assert.Equal(index + 1, collection[index]);
+        }
+
+        [Theory(DisplayName = "AvoidingLargeObjectHeapCollection. Remove undefined.")]
+        [InlineData(int.MinValue)]
+        [InlineData(-1)]
+        [InlineData(50000)]
+        [InlineData(int.MaxValue)]
+        public void RemoveUndefinedTest(int index)
+        {
+            var collection = new AvoidingLargeObjectHeapCollection<int>(_getEnumerable(50000));
+
+            Assert.False(collection.Remove(index));
+            Assert.Equal(50000, collection.Count);
         }
 
     }

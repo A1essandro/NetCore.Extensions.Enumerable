@@ -16,7 +16,7 @@ namespace Extensions.Enumerable.Internal.Collections
         private static int _LargeObjectHeapThreshold = 85000;
 
         private readonly int _maxEntriesPartSize;
-        private IList<T[]> _entriesParts;
+        private List<T[]> _entriesParts = new List<T[]>(0);
         private int _entryCursor = 0;
         private int _partCursor = 0;
 
@@ -130,12 +130,48 @@ namespace Extensions.Enumerable.Internal.Collections
             }
         }
 
+        /// <inheritdoc cref="ICollection{T}.Remove"/>
         public bool Remove(T item)
         {
-            throw new NotImplementedException();
+            //TODO: need optimization
+            for (int partIndex = 0; partIndex < _entriesParts.Count; partIndex++)
+            {
+                int removeIndexInPart = -1;
+                if ((removeIndexInPart = Array.IndexOf(_entriesParts[partIndex], item)) == -1)
+                    continue;
+
+                int totalRemoveIndex = IndexHelper.Compose((partIndex, removeIndexInPart), _maxEntriesPartSize);
+                _pullFromIndex(totalRemoveIndex);
+
+                return true;
+            }
+
+            return false;
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        #region private methods
+
+        private void _pullFromIndex(int index)
+        {
+            for (int i = index; i < Count - 1; i++)
+            {
+                this[i] = this[i + 1];
+            }
+
+            if (_entryCursor == 0)
+            {
+                _entryCursor = _maxEntriesPartSize - 1;
+                _partCursor--;
+            }
+            else
+            {
+                _entryCursor--;
+            }
+        }
+
+        #endregion
 
     }
 }
