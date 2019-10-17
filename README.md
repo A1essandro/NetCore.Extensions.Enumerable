@@ -66,6 +66,10 @@ using Extensions.Enumerable;
 
 IAvoidingLargeObjectHeapCollection<int> collection = _getEnumerable().ToAvoidingLohCollection();
 
+//or
+
+IAvoidingLargeObjectHeapReadOnlyCollection<int> roCollection = _getEnumerable().ToAvoidingLohReadOnlyCollection();
+
 ```
 
 #### Reason
@@ -99,6 +103,8 @@ Intel Pentium CPU G4560 3.50GHz, 1 CPU, 4 logical and 2 physical cores
 | AvoidingLohReadOnly | 1000000 | 29,595,137.6 ns | 60,157.8997 ns | 56,271.7367 ns |  625.0000 |  312.5000 |         - | 4019064 B |
 
 ```
+
+Use `ToAvoidingLohCollection()` or `ToAvoidingLohReadOnlyCollection()` for avoiding allocating large collection in [large object heap](https://docs.microsoft.com/dotnet/standard/garbage-collection/large-object-heap). Prefer `ToAvoidingLohReadOnlyCollection()` if you are sure that the result collection should not modify.
 
 ## Benchmarks
 

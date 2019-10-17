@@ -18,11 +18,23 @@ namespace Extensions.Enumerable
             return new ReadOnlyTempCollection<T>(source, maxSize);
         }
 
+        /// <summary>
+        /// Getting value type which implements <see cref="IAvoidingLargeObjectHeapCollection{T}"/>
+        /// Use for avoiding allocation large collection in the large object heap
+        /// </summary>
+        /// <param name="source"></param>
+        /// <typeparam name="T"></typeparam>
         public static IAvoidingLargeObjectHeapCollection<T> ToAvoidingLohCollection<T>(this IEnumerable<T> source)
         {
             return new AvoidingLargeObjectHeapCollection<T>(source);
         }
 
+        /// <summary>
+        /// Getting value type which implements <see cref="IAvoidingLargeObjectHeapReadOnlyCollection{T}"/>
+        /// Use for avoiding allocation large collection in the large object heap
+        /// </summary>
+        /// <param name="source"></param>
+        /// <typeparam name="T"></typeparam>
         public static IAvoidingLargeObjectHeapReadOnlyCollection<T> ToAvoidingLohReadOnlyCollection<T>(this IEnumerable<T> source)
         {
             return new AvoidingLargeObjectHeapReadOnlyCollection<T>(source);
